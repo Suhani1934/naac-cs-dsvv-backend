@@ -1,4 +1,3 @@
-// backend/routes/criteria.js
 const express = require("express");
 const router = express.Router();
 const Criterion = require("../models/Criterion");
@@ -28,5 +27,6 @@ router.get("/:number", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
 
 module.exports = router;
