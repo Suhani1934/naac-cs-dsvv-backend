@@ -3,20 +3,29 @@ const router = express.Router();
 const Criterion = require("../models/Criterion");
 const verifyAdmin = require("../middleware/auth");
 
-// GET all criteria (for homepage)
+// GET all criteria (for homepage) in ascending order
 router.get("/", async (req, res) => {
   try {
-    // Fetch all unique criterion numbers and sort ascending
-    const criteria = await Criterion.find().distinct("criterionNumber");
+    // Fetch all criteria, select only criterionNumber and name
+    const criteria = await Criterion.find({}, { _id: 0, criterionNumber: 1, name: 1 })
+      .sort({ criterionNumber: 1 }); // ascending order
 
-    // Sort numbers ascending
-    criteria.sort((a, b) => a - b);
+    //  remove duplicates if multiple entries per criterionNumber exist
+    const uniqueCriteria = [];
+    const seen = new Set();
+    for (const c of criteria) {
+      if (!seen.has(c.criterionNumber)) {
+        seen.add(c.criterionNumber);
+        uniqueCriteria.push(c);
+      }
+    }
 
-    res.json(criteria);
+    res.json(uniqueCriteria);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
+
 
 // GET details of a specific criterion
 router.get("/:number", async (req, res) => {
