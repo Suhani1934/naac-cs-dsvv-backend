@@ -67,7 +67,9 @@ router.put("/:id", verifyAdmin, async (req, res) => {
     const { criterionNumber, name } = req.body;
 
     if (!criterionNumber || !name) {
-      return res.status(400).json({ error: "Criterion number and name are required" });
+      return res
+        .status(400)
+        .json({ error: "Criterion number and name are required" });
     }
 
     const updated = await Criterion.findByIdAndUpdate(
@@ -81,7 +83,6 @@ router.put("/:id", verifyAdmin, async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
 
 // DELETE - Delete Criterion
 router.delete("/:id", verifyAdmin, async (req, res) => {
@@ -115,9 +116,7 @@ router.get("/:criterionNumber/details", async (req, res) => {
   }
 });
 
-// -----------------------------
 // POST - Add new main heading to criterion
-// -----------------------------
 router.post("/detail", verifyAdmin, async (req, res) => {
   try {
     const { criterionNumber, mainSerialNumber, mainTitle } = req.body;
@@ -127,7 +126,8 @@ router.post("/detail", verifyAdmin, async (req, res) => {
     }
 
     const criterion = await Criterion.findOne({ criterionNumber });
-    if (!criterion) return res.status(404).json({ error: "Criterion not found" });
+    if (!criterion)
+      return res.status(404).json({ error: "Criterion not found" });
 
     const newDetail = new CriterionDetail({
       criterion: criterion._id,
@@ -143,9 +143,7 @@ router.post("/detail", verifyAdmin, async (req, res) => {
   }
 });
 
-// -----------------------------
 // PUT - Update a main heading
-// -----------------------------
 router.put("/detail/:id", verifyAdmin, async (req, res) => {
   try {
     const updated = await CriterionDetail.findByIdAndUpdate(
@@ -162,9 +160,7 @@ router.put("/detail/:id", verifyAdmin, async (req, res) => {
   }
 });
 
-// -----------------------------
 // DELETE - Delete a main heading (with all subHeadings)
-// -----------------------------
 router.delete("/detail/:id", verifyAdmin, async (req, res) => {
   try {
     await CriterionDetail.findByIdAndDelete(req.params.id);
@@ -174,9 +170,7 @@ router.delete("/detail/:id", verifyAdmin, async (req, res) => {
   }
 });
 
-// -----------------------------
 // POST - Add sub-heading inside a main heading
-// -----------------------------
 router.post("/detail/:id/sub", verifyAdmin, async (req, res) => {
   try {
     const { serialNumber, title, link } = req.body;
@@ -195,9 +189,7 @@ router.post("/detail/:id/sub", verifyAdmin, async (req, res) => {
   }
 });
 
-// -----------------------------
 // PUT - Update sub-heading
-// -----------------------------
 router.put("/detail/:id/sub/:subId", verifyAdmin, async (req, res) => {
   try {
     const { serialNumber, title, link } = req.body;
@@ -223,9 +215,7 @@ router.put("/detail/:id/sub/:subId", verifyAdmin, async (req, res) => {
   }
 });
 
-// -----------------------------
 // DELETE - Remove a sub-heading
-// -----------------------------
 router.delete("/detail/:id/sub/:subId", verifyAdmin, async (req, res) => {
   try {
     const detail = await CriterionDetail.findById(req.params.id);
